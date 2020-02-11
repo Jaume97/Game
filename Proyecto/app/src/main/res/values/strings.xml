@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Proyecto</string>
+    <string name="Juego">JUEGO</string>
+    <string name="Opciones">OPCIONES</string>
+    <string name="FAME">SALON DE LA FAMA</string>
+    <string name="CREDITOS">CREDITOS</string>
+    <string name="TUTORIAL">TUTORIAL</string>
+    <string name="VIBRACION">VIBRACIÓN</string>
+    <string name="VOLUMEN">VOLUMEN</string>
+    <string name="Idioma">IDIOMA</string>
+</resources>

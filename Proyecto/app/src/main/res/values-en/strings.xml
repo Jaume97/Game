@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Proyecto</string>
+    <string name="Juego">GAME</string>
+    <string name="Opciones">OPTIONS</string>
+    <string name="FAME">HALL OF FAME</string>
+    <string name="CREDITOS">CREDITS</string>
+    <string name="TUTORIAL">TUTORIAL</string>
+    <string name="VIBRACION">VIBRATION</string>
+    <string name="VOLUMEN">SOUND</string>
+    <string name="Idioma">LANGUAGE</string>
+</resources>
