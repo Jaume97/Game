@@ -111,8 +111,9 @@ int cruceY, cruceX;
         c.drawBitmap(heartFull,(heartFull.getWidth()+getPixels(1.5f))*2,0,null);
 
         c.drawBitmap(dibujoNick[frame],anchoPantalla/2,altoPantalla/2,null);
-        c.drawBitmap(dibujoJormunand[frame],jormunand.posX,jormunand.posY,null);//Preguntat como hacer para que jormunand se quede en una posicion del mapa fija y no en el dispositivo
+        c.drawBitmap(dibujoJormunand[frame],jormunand.posX,jormunand.posY,null);
         c.drawRect(nick.hitboxNick,paint);
+        c.drawRect(jormunand.jormunandHitbox,paint);
 
         c.drawBitmap(imgCruceta,cruceX,cruceY,null);
         c.drawBitmap(imgAttack,anchoPantalla-imgAttack.getWidth(),altoPantalla-imgAttack.getHeight(),null);

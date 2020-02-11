@@ -3,6 +3,7 @@ package com.example.proyecto;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.Log;
 
 import java.util.Random;
@@ -12,6 +13,7 @@ public class Jormunand {
     Bitmap[] iz,de,ar,ab;
     float posX,posY;
     int altoPantalla,anchoPantalla;
+    Rect jormunandHitbox;
     public Jormunand(Bitmap imagenes,float x,float y,int anchoPantalla,int altoPantalla){
         this.imagenes=imagenes;
         this.posX=x;
@@ -20,7 +22,7 @@ public class Jormunand {
         this.altoPantalla=altoPantalla;
         getImagenes(imagenes,0,0,3,4,3,4);  //numPerX=indice de la parte de eje x donde empieza;numPerY=eje y donde se empieza a contar; numFramesH=cantidad de imagenes a contar en el eje x;
                                                                                                         //numFramesV=cantidad de imagenes en el eje y; fraPerso cantidad de imagenes que quieres en el eje X;lo mismo con fraPersoY;
-
+        jormunandHitbox= new Rect((int)posX,(int)posY,(int)posX+ar[0].getWidth(),(int)posY+ar[0].getHeight());
     }
 
     public void dibujar(Canvas c){
