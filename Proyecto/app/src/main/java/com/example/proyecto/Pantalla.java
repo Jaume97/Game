@@ -41,6 +41,12 @@ public class Pantalla extends SurfaceView implements SurfaceHolder.Callback {
         camara=getBitmapFromAssets("camera.png");
 
     }
+
+    /**
+     * Metodo que coje un fichero Bitmap en la carpeta assets
+     * @param fichero
+     * @return Bitmap escogido o null en caso de error
+     */
     public Bitmap getBitmapFromAssets(String fichero) {
         try {
             InputStream is=getContext().getAssets().open(fichero);
@@ -90,7 +96,7 @@ public class Pantalla extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int nuevaEscena=escenaActual.onTouchEvent(event);
-        Log.i("escena",""+nuevaEscena); //Switch: Crearon todas las escenas y en sus escenas pintar lo necesario
+        //Log.i("escena",""+nuevaEscena); //Switch: Crearon todas las escenas y en sus escenas pintar lo necesario
         if (escenaActual.numeroEscena!=nuevaEscena) {
             switch (nuevaEscena) {
                 case 1:

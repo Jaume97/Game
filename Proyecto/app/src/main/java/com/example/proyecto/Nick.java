@@ -3,6 +3,7 @@ package com.example.proyecto;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ public class Nick {
     Context context;
     int altoPantalla,anchoPantalla;
     int vidas=3;
+    boolean spellFrozen=false;
     public float getX() {
         return x;
     }
@@ -41,6 +43,18 @@ public class Nick {
         getImagenes(imagenes,0,0,3,4,3,4);
         hitboxNick=new Rect(anchoPantalla/2,altoPantalla/2,(anchoPantalla/2)+imgRescalada.getWidth(),(altoPantalla/2)+imgRescalada.getHeight());
     }
+
+
+    /**
+     * Metodo que rellena los arrays ar,ab,de,iz de nick con sus respectivos Bitmpas
+     * @param img
+     * @param numPerX
+     * @param numPerY
+     * @param numFramesH
+     * @param numFramesV
+     * @param fraPersoX
+     * @param fraPersoY
+     */
     public void getImagenes(Bitmap img,int numPerX,int numPerY,int numFramesH,int numFramesV,int fraPersoX,int fraPersoY){
         int sizeX=img.getWidth()/numFramesH;
         int sizeY=img.getHeight()/numFramesV;

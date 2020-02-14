@@ -9,28 +9,38 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.Random;
+
 public class Juego extends Escena {
+
     Jormunand jormunand;
+    LibroIce libroIce;
     Nick nick;
     Bitmap[] dibujoNick,dibujoJormunand;
-    Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty;
+    Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen;
     Rect izquierda,derecha,arriba,abajo,ataque;
     int tick=200,distanciaPaso;
     long tiempo=0;
     int frame=0;
     int x,y;
     boolean arr=false, aba=false, der=false, izz=false;
-int cruceY, cruceX;
-
+    int cruceY, cruceX,posicionXBook,posicionYBook;
+    Random random;
     public Juego(int numeroEscena, Bitmap fondo, Context context, int anchoPantalla, int altoPantalla) {
         super(numeroEscena, fondo, context, anchoPantalla, altoPantalla);
         imagenes_Jormunand=getBitmapFromAssets("flying_dragon-red.png");
         imagenes_Nick=getBitmapFromAssets("nick.png");
         heartFull=getBitmapFromAssets("heart-full.png");
         heartFull=escalaAltura(heartFull,altoPantalla/10);
+        bookFrozen=getBitmapFromAssets("bookice.png");
+        bookFrozen=escalaAnchura(bookFrozen,anchoPantalla/15);
         distanciaPaso=getPixels(5);
-
-
+        random=new Random();
+        x=anchoPantalla*-2;
+        y=altoPantalla*-2;
+        posicionXBook=(int)(Math.random()*(x-1));
+        posicionYBook=(int)(Math.random()*(y-1));
+        libroIce=new LibroIce(bookFrozen,posicionXBook,posicionYBook,(heartFull.getWidth()+getPixels(1.5f))*3);
 
         mapa=getBitmapFromAssets("map.jpg");
         Log.i("mapa",""+(mapa==null));
@@ -53,20 +63,22 @@ int cruceY, cruceX;
         cruceY=altoPantalla-imgCruceta.getHeight();
         cruceX=0;
 
-        izquierda=new Rect(cruceX,(int)(cruceY+porSize1*imgCruceta.getHeight()),cruceX+(int)(porSize1*imgCruceta.getWidth()),cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()));
+        izquierda=new Rect(cruceX,(int)(cruceY+porSize1*imgCruceta.getHeight()),cruceX+(int)(porSize1*imgCruceta.getWidth()),
+                cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()));
         arriba= new Rect(cruceX+(int)(porSize1*imgCruceta.getWidth()),cruceY,cruceX+(int)(porSize1*imgCruceta.getWidth())+(int)(porSize2*imgCruceta.getWidth()),(int)(cruceY+porSize1*imgCruceta.getHeight()));
 
-        derecha= new Rect(cruceX+(int)(porSize1*imgCruceta.getWidth())+(int)(porSize2*imgCruceta.getWidth()),(int)(cruceY+porSize1*imgCruceta.getHeight()),cruceX+imgCruceta.getWidth(),cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()));
+        derecha= new Rect(cruceX+(int)(porSize1*imgCruceta.getWidth())+(int)(porSize2*imgCruceta.getWidth()),
+                (int)(cruceY+porSize1*imgCruceta.getHeight()),cruceX+imgCruceta.getWidth(),cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()));
 
-        abajo= new Rect(cruceX+(int)(porSize1*imgCruceta.getWidth()),cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()),cruceX+(int)(porSize1*imgCruceta.getWidth())+(int)(porSize2*imgCruceta.getWidth()),cruceY+imgCruceta.getHeight());
-        ataque= new Rect(anchoPantalla/11*9,altoPantalla/9*6,anchoPantalla,altoPantalla);
+        abajo= new Rect(cruceX+(int)(porSize1*imgCruceta.getWidth()),cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()),
+                cruceX+(int)(porSize1*imgCruceta.getWidth())+(int)(porSize2*imgCruceta.getWidth()),cruceY+imgCruceta.getHeight());
+        ataque= new Rect(anchoPantalla-imgAttack.getWidth(),altoPantalla-imgAttack.getHeight(),anchoPantalla,altoPantalla);
 
         jormunand= new Jormunand(imagenes_Jormunand,200,200,anchoPantalla,altoPantalla);
         nick=new Nick(imagenes_Nick,200,400,context,anchoPantalla,altoPantalla);
         dibujoNick=nick.iz;
         dibujoJormunand=jormunand.ab;
-         x=anchoPantalla*-2;
-         y=altoPantalla*-2;
+
     }
 //    public void getImagenes(Bitmap img,int numPerX,int numPerY,int numFramesH,int numFramesV,int fraPersoX,int fraPersoY){
 //        int sizeX=img.getWidth()/numFramesH;
@@ -113,8 +125,15 @@ int cruceY, cruceX;
         c.drawBitmap(dibujoNick[frame],anchoPantalla/2,altoPantalla/2,null);
         c.drawBitmap(dibujoJormunand[frame],jormunand.posX,jormunand.posY,null);
         c.drawRect(nick.hitboxNick,paint);
-        c.drawRect(jormunand.jormunandHitbox,paint);
+        jormunand.dibujar(c,paint,(int)jormunand.posX,(int)jormunand.posY);
 
+        if(!nick.spellFrozen){
+            libroIce.dibujar(c,paint);
+//            Log.i("heatboxLibro","PosxLibro: "+libroIce.posX+" posYlibro: "+libroIce.posY+" Paint: "+paint);
+        }else{
+            libroIce.dibujarHUD(c);
+        }
+        Log.i("colisionBook","HitboxNick: "+nick.hitboxNick.left+":"+nick.hitboxNick.right);
         c.drawBitmap(imgCruceta,cruceX,cruceY,null);
         c.drawBitmap(imgAttack,anchoPantalla-imgAttack.getWidth(),altoPantalla-imgAttack.getHeight(),null);
         c.drawRect(izquierda,paint);
@@ -139,12 +158,20 @@ int cruceY, cruceX;
             }
             tiempo=System.currentTimeMillis();
         }
+        if(libroIce.heatbox!=null){
+            if(nick.hitboxNick.intersect(libroIce.heatbox)){//PROBLEMAS HITBOX NICK SE SOLAPA CON LA DEL LIBRO Y HACE SU HITBOX PEQUEÑA.CLONAR RECTS DE NICK
+                nick.spellFrozen=true;
+                libroIce.removeBook();
+            }
+
+        }
 
 
-        if (arr) {y+=distanciaPaso;jormunand.posY+=distanciaPaso;};
-        if (aba) {y-=distanciaPaso;jormunand.posY-=distanciaPaso;};
-        if (der) {x-=distanciaPaso;jormunand.posX-=distanciaPaso;};
-        if (izz) {x+=distanciaPaso;jormunand.posX+=distanciaPaso;};
+
+        if (arr) {y+=distanciaPaso;jormunand.posY+=distanciaPaso;libroIce.sumaY(distanciaPaso);};
+        if (aba) {y-=distanciaPaso;jormunand.posY-=distanciaPaso;libroIce.sumaY(-distanciaPaso);};
+        if (der) {x-=distanciaPaso;jormunand.posX-=distanciaPaso;libroIce.sumaX(-distanciaPaso);};
+        if (izz) {x+=distanciaPaso;jormunand.posX+=distanciaPaso;libroIce.sumaX(distanciaPaso);};
 
 
     }

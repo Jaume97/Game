@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-import static android.provider.Settings.System.getString;
 
 
 public class Menu extends Escena {

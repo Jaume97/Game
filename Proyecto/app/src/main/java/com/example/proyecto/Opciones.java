@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 public class Opciones extends Escena {
+
     Rect vibracion,volumen,idioma;
     MediaPlayer mediaPlayer;
     boolean idiomaEspañol=preferences.getBoolean("idioma",false),vibra=true,volu=true;
