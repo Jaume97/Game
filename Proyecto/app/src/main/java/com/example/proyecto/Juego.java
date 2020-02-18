@@ -20,7 +20,7 @@ public class Juego extends Escena {
     LibroIce libroIce;
     Nick nick;
     Bitmap[] dibujoNick,dibujoJormunand;
-    Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen;
+    Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen,imagenes_attack;
     Rect izquierda,derecha,arriba,abajo,ataque;
     int tick=200,distanciaPaso;
     long tiempo=0;
@@ -43,6 +43,8 @@ public class Juego extends Escena {
         imagenes_Jormunand=getBitmapFromAssets("flying_dragon-red.png");
         //Sprite Nick
         imagenes_Nick=getBitmapFromAssets("nick.png");
+        //Sprite nick attack
+        imagenes_attack=getBitmapFromAssets("sprite-nick-attack.png");
         //Sprite HeartFull
         heartFull=getBitmapFromAssets("heart-full.png");
         heartFull=escalaAltura(heartFull,altoPantalla/10);
@@ -100,7 +102,7 @@ public class Juego extends Escena {
         ataque= new Rect(anchoPantalla-imgAttack.getWidth(),altoPantalla-imgAttack.getHeight(),anchoPantalla,altoPantalla);
 
         jormunand= new Jormunand(context,imagenes_Jormunand,altoPantalla,anchoPantalla,0,0,3,4,3,4,200,200,3);
-        nick=new Nick(context,imagenes_Nick,altoPantalla,anchoPantalla,0,0,3,4,3,4,anchoPantalla/2,altoPantalla/2,4);
+        nick=new Nick(context,imagenes_Nick,altoPantalla,anchoPantalla,0,0,3,4,3,4,anchoPantalla/2,altoPantalla/2,4,imagenes_attack);
 
 
     }
@@ -136,12 +138,10 @@ public class Juego extends Escena {
 
 
         nick.dibujar(c);
-        //        c.drawBitmap(jormunand.actual[frame],jormunand.posX,jormunand.posY,null);
         jormunand.dibujar(c);
 
         if(!nick.spellFrozen){
             libroIce.dibujar(c,paint);
-//            Log.i("heatboxLibro","PosxLibro: "+libroIce.posX+" posYlibro: "+libroIce.posY+" Paint: "+paint);
         }else{
             libroIce.dibujarHUD(c);
         }
@@ -182,9 +182,6 @@ public class Juego extends Escena {
                     case abajo:
                         if (!cab)nick.setVidas(nick.getVidas() - 1);
                         cab=true;
-//                        y += getPixels(100);
-//                        jormunand.mueveY(getPixels(100));
-//                        libroIce.sumaY(getPixels(100));
                         break;
                     case arriba:
                         if (!car)nick.setVidas(nick.getVidas() - 1);
@@ -263,6 +260,10 @@ public class Juego extends Escena {
                     aba=true;
                     direccion=Direccion.abajo;
                     nick.actual=nick.frames.ab;
+                }
+
+                if(ataque.contains((int) event.getX(),(int) event.getY())){
+                    nick.isFigthing=true;
                 }
                 break;
                 case MotionEvent.ACTION_UP:

@@ -17,10 +17,8 @@ public class Enemigo extends Personaje {
     @Override
     public void actualizaFisica() {
         super.actualizaFisica();
-//        Log.i("TAG", "actualizaFisica: "+(System.currentTimeMillis()-tiempo)+" "+System.currentTimeMillis()+" "+tiempo+" "+tick);
         if(System.currentTimeMillis()-tiempo>tick){
             cont++;
-
                 switch (random){//PIXELES???
                     case 1://derecha
                         this.mueveX(getPixels(3));
@@ -42,9 +40,7 @@ public class Enemigo extends Personaje {
                     default:
                         Log.i("no-gira",""+random);
                         break;
-
                 }
-
             if(cont==20){
                 random=(int) (Math.random()*4+1);
                 cont=0;

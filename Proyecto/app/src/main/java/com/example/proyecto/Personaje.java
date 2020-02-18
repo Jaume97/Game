@@ -55,11 +55,11 @@ public class Personaje {
         int sizeX=img.getWidth()/numFramesH;
         int sizeY=img.getHeight()/numFramesV;
 
-        frames= new Frames();
-        frames.iz= new Bitmap[3];
-        frames.de= new Bitmap[3];
-        frames.ab= new Bitmap[3];
-        frames.ar= new Bitmap[3];
+        Frames frames1= new Frames();
+        frames1.iz= new Bitmap[fraPersoX];
+        frames1.de= new Bitmap[fraPersoX];
+        frames1.ab= new Bitmap[fraPersoX];
+        frames1.ar= new Bitmap[fraPersoX];
 
 
 
@@ -68,20 +68,20 @@ public class Personaje {
         for (int j = 0; j < fraPersoY; j++) {
             for (int i = 0; i < fraPersoX; i++) {
                 switch (j){
-                    case 0: frames.ar[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
+                    case 0: frames1.ar[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
                         break;
-                    case 1: frames.de[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
+                    case 1: frames1.de[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
                         Log.i("derecha","X:"+i+" Y:"+j);
                         break;
-                    case 2: frames.ab[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
+                    case 2: frames1.ab[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
                         break;
-                    case 3: frames.iz[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
+                    case 3: frames1.iz[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
                         break;
                 }
             }
         }
 
-        return frames;
+        return frames1;
     }
     /**
      * Metodo que escala en altura el Bitmap pasado por el parametro
