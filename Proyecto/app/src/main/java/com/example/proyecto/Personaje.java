@@ -9,8 +9,11 @@ import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
-
+enum Direccion{
+    derecha,izquierda,arriba,abajo
+}
 public class Personaje {
+    Direccion direccion;
     Bitmap imagenes;
     Bitmap[] actual;
     Frames frames;
@@ -43,6 +46,7 @@ public class Personaje {
         paint.setStrokeWidth(10);
         frames=getImagenes(imagenes,indiceX,indiceY,cantidadFramesX,cantidadFramesY,framesCojerX,framesCojerY,tamañoEscalado);
         actual=frames.ab;
+        direccion=Direccion.abajo;
         actualizoRext();
 
     }
@@ -71,7 +75,6 @@ public class Personaje {
                     case 0: frames1.ar[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
                         break;
                     case 1: frames1.de[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
-                        Log.i("derecha","X:"+i+" Y:"+j);
                         break;
                     case 2: frames1.ab[i]=escalaAltura(Bitmap.createBitmap(img,(iniX+i)*sizeX,(iniY+j)*sizeY,sizeX,sizeY),altoPantalla/tamañoEscalado) ;
                         break;
@@ -103,6 +106,7 @@ public class Personaje {
     }
 
     public void dibujar(Canvas c){
+
         c.drawBitmap(actual[frame],posX,posY,null);
         c.drawRect(hitbox,paint);
     }

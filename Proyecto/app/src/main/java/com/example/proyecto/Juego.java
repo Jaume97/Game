@@ -10,12 +10,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.Random;
-enum Direccion{
-    derecha,izquierda,arriba,abajo
-}
+
 
 public class Juego extends Escena {
-    Direccion direccion=Direccion.izquierda;
     Jormunand jormunand;
     LibroIce libroIce;
     Nick nick;
@@ -44,7 +41,7 @@ public class Juego extends Escena {
         //Sprite Nick
         imagenes_Nick=getBitmapFromAssets("nick.png");
         //Sprite nick attack
-        imagenes_attack=getBitmapFromAssets("sprite-nick-attack.png");
+        imagenes_attack=getBitmapFromAssets("frames-ataque-fixed.png");
         //Sprite HeartFull
         heartFull=getBitmapFromAssets("heart-full.png");
         heartFull=escalaAltura(heartFull,altoPantalla/10);
@@ -65,7 +62,8 @@ public class Juego extends Escena {
         libroIce=new LibroIce(bookFrozen,posicionXBook,posicionYBook,(heartFull.getWidth()+getPixels(1.5f))*3);
 
         //Mapa
-        mapa=getBitmapFromAssets("map.jpg");
+//        mapa=getBitmapFromAssets("map.jpg");
+        mapa=getBitmapFromAssets("mapa.png");
         mapa=escalaAnchura(mapa,anchoPantalla*4);
 
         imgCruceta=getBitmapFromAssets("dpad.png");
@@ -170,7 +168,7 @@ public class Juego extends Escena {
         if(jormunand.clonaRect()!=null) {
             if (nick.clonaRect().intersect(jormunand.clonaRect())) {
                 tinicoli = System.currentTimeMillis();
-                switch (direccion) {
+                switch (nick.direccion) {
                     case izquierda:
                         if (!ciz)nick.setVidas(nick.getVidas() - 1);
                         ciz=true;
@@ -237,39 +235,42 @@ public class Juego extends Escena {
 
     @Override
     public int onTouchEvent(MotionEvent event) {
-        switch (event.getAction()){
-            case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_DOWN:
-                if(izquierda.contains((int) event.getX(),(int) event.getY())){
-                    paro();
-                    izz=true;
-                    direccion=Direccion.izquierda;
-                    nick.actual=nick.frames.iz;
-                }else if(derecha.contains((int) event.getX(),(int) event.getY())){
-                    paro();
-                    der=true;
-                    direccion=Direccion.derecha;
-                    nick.actual=nick.frames.de;
-                }else if(arriba.contains((int) event.getX(),(int) event.getY())){
-                    paro();
-                    arr=true;
-                    direccion=Direccion.arriba;
-                    nick.actual=nick.frames.ar;
-                }else if(abajo.contains((int) event.getX(),(int) event.getY())){
-                    paro();
-                    aba=true;
-                    direccion=Direccion.abajo;
-                    nick.actual=nick.frames.ab;
-                }
+        if(!nick.isFigthing){
+            switch (event.getAction()){
+                case MotionEvent.ACTION_MOVE:
+                case MotionEvent.ACTION_DOWN:
+                    if(izquierda.contains((int) event.getX(),(int) event.getY())){
+                        paro();
+                        izz=true;
+                        nick.direccion=Direccion.izquierda;
+                        nick.actual=nick.frames.iz;
+                    }else if(derecha.contains((int) event.getX(),(int) event.getY())){
+                        paro();
+                        der=true;
+                        nick.direccion=Direccion.derecha;
+                        nick.actual=nick.frames.de;
+                    }else if(arriba.contains((int) event.getX(),(int) event.getY())){
+                        paro();
+                        arr=true;
+                        nick.direccion=Direccion.arriba;
+                        nick.actual=nick.frames.ar;
+                    }else if(abajo.contains((int) event.getX(),(int) event.getY())){
+                        paro();
+                        aba=true;
+                        nick.direccion=Direccion.abajo;
+                        nick.actual=nick.frames.ab;
+                    }
 
-                if(ataque.contains((int) event.getX(),(int) event.getY())){
-                    nick.isFigthing=true;
-                }
-                break;
+                    if(ataque.contains((int) event.getX(),(int) event.getY())){
+                        nick.isFigthing=true;
+                    }
+                    break;
                 case MotionEvent.ACTION_UP:
                     paro();
                     break;
+            }
         }
+
         return numeroEscena;
     }
 }
