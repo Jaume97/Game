@@ -9,9 +9,19 @@ public class Nick extends Personaje{
     boolean spellFrozen=false,isFigthing=false;
     Frames framesAttack;
     long tiempo=0;
-    int tick=150;
+    int tick=250;
     int frameAttack =0;
     float posXCopy;
+    Spell spell;
+
+    public Spell getSpell() {
+        return spell;
+    }
+
+    public void setSpell(Spell spell) {
+        this.spell = spell;
+    }
+
     public int getVidas() {
         return vidas;
     }
@@ -28,24 +38,32 @@ public class Nick extends Personaje{
 
     @Override
     public void dibujar(Canvas c) {
-        super.dibujar(c);
+
         if(isFigthing){
+            spell.dibujar(c,paint);
             if(direccion==Direccion.izquierda){
                 actual=framesAttack.iz;
+                spell.sumaX(-getPixels(5));
             }else if(direccion==Direccion.derecha){
                 actual=framesAttack.de;
+                spell.sumaX(getPixels(5));
             }else if(direccion==Direccion.arriba){
                 actual=framesAttack.ar;
+                spell.sumaY(-getPixels(5));
             }else if(direccion==Direccion.abajo){
                 actual=framesAttack.ab;
+                spell.sumaY(getPixels(5));
             }
+
         }
+        super.dibujar(c);
     }
 
     @Override
-    public void actualizaFisica() {//FALLA AQUI
+    public void actualizaFisica() {
         super.actualizaFisica();
         if(isFigthing){
+            spell.actualizaFisica();
             if(System.currentTimeMillis()-tiempo>tick){
                 frameAttack++;
                 if(frameAttack >=actual.length){

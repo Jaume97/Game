@@ -2,21 +2,24 @@ package com.example.proyecto;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
-
-import java.util.Random;
 
 
 public class Juego extends Escena {
     Jormunand jormunand;
     LibroIce libroIce;
     Nick nick;
-    Bitmap[] dibujoNick,dibujoJormunand;
+    Bitmap[] fire={escalaAltura(getBitmapFromAssets("flame_0_fixed.png"),altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_1_fixed.png"),
+            altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_2_fixed.png"),altoPantalla/8)};
+    Bitmap[] frost={escalaAltura(getBitmapFromAssets("frost_0.png"),altoPantalla/14),escalaAnchura(getBitmapFromAssets("frost_1.png"),
+            anchoPantalla/25)};
+    Bitmap[] cloudFire={escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/4),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/4),
+            escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/4),escalaAnchura(getBitmapFromAssets("cloud_fire_3.png"),anchoPantalla/4),
+            escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/4),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/4),
+            escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/4)};
     Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen,imagenes_attack;
     Rect izquierda,derecha,arriba,abajo,ataque;
     int tick=200,distanciaPaso;
@@ -34,6 +37,7 @@ public class Juego extends Escena {
     long tcoli=0, tinicoli=0;
     int ttotal=500;
 
+    Spell spell;
     public Juego(int numeroEscena, Bitmap fondo, Context context, int anchoPantalla, int altoPantalla) {
         super(numeroEscena, fondo, context, anchoPantalla, altoPantalla);
         //Sprite Jormunand
@@ -99,8 +103,10 @@ public class Juego extends Escena {
 
         ataque= new Rect(anchoPantalla-imgAttack.getWidth(),altoPantalla-imgAttack.getHeight(),anchoPantalla,altoPantalla);
 
-        jormunand= new Jormunand(context,imagenes_Jormunand,altoPantalla,anchoPantalla,0,0,3,4,3,4,200,200,3);
+        jormunand= new Jormunand(context,imagenes_Jormunand,altoPantalla,anchoPantalla,0,0,3,4,3,4,200,200,3,cloudFire);
+
         nick=new Nick(context,imagenes_Nick,altoPantalla,anchoPantalla,0,0,3,4,3,4,anchoPantalla/2,altoPantalla/2,4,imagenes_attack);
+
 
 
     }
@@ -166,8 +172,10 @@ public class Juego extends Escena {
             }
         }
         if(jormunand.clonaRect()!=null) {
+            //Deteccion de colisiones cuerpo a cuerpo
             if (nick.clonaRect().intersect(jormunand.clonaRect())) {
                 tinicoli = System.currentTimeMillis();
+                vibrator.vibrate(100);
                 switch (nick.direccion) {
                     case izquierda:
                         if (!ciz)nick.setVidas(nick.getVidas() - 1);
@@ -188,7 +196,12 @@ public class Juego extends Escena {
                 }
 
             }
+//            deteccion de colisiones con spells
+            if(nick.spell.heatbox!=null){
+                if(nick.spell.heatbox.intersect(jormunand.clonaRect())){
 
+                }
+            }
         }
 
         if (ciz || cde || cab || car){
@@ -263,10 +276,13 @@ public class Juego extends Escena {
 
                     if(ataque.contains((int) event.getX(),(int) event.getY())){
                         nick.isFigthing=true;
+                        spell = new Spell(nick.spellFrozen?frost:fire,anchoPantalla/2,nick.spellFrozen?(altoPantalla/2+getPixels(20)):(altoPantalla/2+getPixels(40)));
+                        nick.setSpell(spell);
                     }
                     break;
                 case MotionEvent.ACTION_UP:
                     paro();
+
                     break;
             }
         }

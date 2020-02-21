@@ -106,7 +106,6 @@ public class Personaje {
     }
 
     public void dibujar(Canvas c){
-
         c.drawBitmap(actual[frame],posX,posY,null);
         c.drawRect(hitbox,paint);
     }
