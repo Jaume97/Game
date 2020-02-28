@@ -42,4 +42,7 @@ public class Spell {
             tiempo=System.currentTimeMillis();
         }
     }
+    public void removeSpell(){
+        heatbox=null;
+    }
 }

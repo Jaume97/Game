@@ -8,10 +8,12 @@ import android.util.Log;
 import java.util.Timer;
 
 public class Jormunand extends Enemigo {
-    Bitmap[] imagenesDaño;
-    public Jormunand(Context context,Bitmap imagenes, int altoPantalla, int anchoPantalla, int indiceX, int indiceY, int cantidadFramesX, int cantidadFramesY, int framesCojerX, int framesCojerY, float posx, float posY, int tamañoEscalado,Bitmap[] imagenesDaño) {
-        super(context,imagenes, altoPantalla, anchoPantalla, indiceX, indiceY, cantidadFramesX, cantidadFramesY, framesCojerX, framesCojerY, posx, posY,tamañoEscalado);
-        this.imagenesDaño=imagenesDaño;
+
+    int vidas=20;
+    public Jormunand(Context context,Bitmap imagenes, int altoPantalla, int anchoPantalla, int indiceX, int indiceY, int cantidadFramesX,
+                     int cantidadFramesY, int framesCojerX, int framesCojerY, float posx, float posY, int tamañoEscalado,Bitmap[] imagenesDañoFire,Bitmap[] imagenesDañoIce) {
+        super(context,imagenes, altoPantalla, anchoPantalla, indiceX, indiceY, cantidadFramesX, cantidadFramesY, framesCojerX, framesCojerY, posx, posY,tamañoEscalado,imagenesDañoFire,imagenesDañoIce);
+
     }
 
     @Override

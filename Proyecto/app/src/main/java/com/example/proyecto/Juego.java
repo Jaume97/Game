@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 
 
@@ -12,16 +13,23 @@ public class Juego extends Escena {
     Jormunand jormunand;
     LibroIce libroIce;
     Nick nick;
+
     Bitmap[] fire={escalaAltura(getBitmapFromAssets("flame_0_fixed.png"),altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_1_fixed.png"),
             altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_2_fixed.png"),altoPantalla/8)};
+
     Bitmap[] frost={escalaAltura(getBitmapFromAssets("frost_0.png"),altoPantalla/14),escalaAnchura(getBitmapFromAssets("frost_1.png"),
             anchoPantalla/25)};
-    Bitmap[] cloudFire={escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/4),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/4),
-            escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/4),escalaAnchura(getBitmapFromAssets("cloud_fire_3.png"),anchoPantalla/4),
-            escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/4),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/4),
-            escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/4)};
+
+    Bitmap[] cloudFire={escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/5),
+            escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_fire_3.png"),anchoPantalla/5),
+            escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/5),
+            escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/5)};
+
+    Bitmap[] cloudIce={escalaAnchura(getBitmapFromAssets("cloud_cold_0.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_cold_1.png"),anchoPantalla/5),
+            escalaAnchura(getBitmapFromAssets("cloud_cold_2.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_cold_1.png"),anchoPantalla/5),
+            escalaAnchura(getBitmapFromAssets("cloud_cold_0.png"),anchoPantalla/5)};
     Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen,imagenes_attack;
-    Rect izquierda,derecha,arriba,abajo,ataque;
+    Rect izquierda,derecha,arriba,abajo,ataque,rectMapa;
     int tick=200,distanciaPaso;
     long tiempo=0;
     int frame=0;
@@ -60,15 +68,16 @@ public class Juego extends Escena {
         x=anchoPantalla*-2;
         y=altoPantalla*-2;
 
-        posicionXBook=(int)(Math.random()*(x-1));
-        posicionYBook=(int)(Math.random()*(y-1));
 
-        libroIce=new LibroIce(bookFrozen,posicionXBook,posicionYBook,(heartFull.getWidth()+getPixels(1.5f))*3);
+
+        libroIce=new LibroIce(bookFrozen,-1000,-1000,(heartFull.getWidth()+getPixels(1.5f))*3);
 
         //Mapa
 //        mapa=getBitmapFromAssets("map.jpg");
         mapa=getBitmapFromAssets("mapa.png");
         mapa=escalaAnchura(mapa,anchoPantalla*4);
+
+        rectMapa= new Rect(x,y,x+mapa.getWidth(),y+mapa.getHeight());
 
         imgCruceta=getBitmapFromAssets("dpad.png");
         imgCruceta=escalaAltura(imgCruceta,altoPantalla/4);
@@ -103,12 +112,12 @@ public class Juego extends Escena {
 
         ataque= new Rect(anchoPantalla-imgAttack.getWidth(),altoPantalla-imgAttack.getHeight(),anchoPantalla,altoPantalla);
 
-        jormunand= new Jormunand(context,imagenes_Jormunand,altoPantalla,anchoPantalla,0,0,3,4,3,4,200,200,3,cloudFire);
+        jormunand= new Jormunand(context,imagenes_Jormunand,altoPantalla,anchoPantalla,0,0,3,4,3,4,200,200,3,cloudFire,cloudIce);
 
         nick=new Nick(context,imagenes_Nick,altoPantalla,anchoPantalla,0,0,3,4,3,4,anchoPantalla/2,altoPantalla/2,4,imagenes_attack);
 
 
-
+        Log.i("tamaño","PosXMapa:"+x+"");
     }
 
     @Override
@@ -116,7 +125,9 @@ public class Juego extends Escena {
         super.dibujar(c);
         c.drawColor(Color.BLACK);
         //JUEGO
+        c.drawRect(rectMapa,paint);
         c.drawBitmap(mapa,x,y,null);
+
         switch(nick.getVidas()){
             case 3:
                 c.drawBitmap(heartFull,0,0,null);
@@ -196,12 +207,21 @@ public class Juego extends Escena {
                 }
 
             }
-//            deteccion de colisiones con spells
-            if(nick.spell.heatbox!=null){
-                if(nick.spell.heatbox.intersect(jormunand.clonaRect())){
-
+            if(nick.isFigthing){
+                if(jormunand.clonaRect().intersect(nick.spell.heatbox)){
+                    Log.i("coli","colisionSpell");
+                    if(!nick.spellFrozen){
+                        jormunand.isHurtWhitFire=true;
+                        jormunand.vidas--;
+                    }else{
+                        jormunand.isHurtWhitIce=true;
+                        jormunand.vidas--;
+                    }
+                    nick.spellHit=true;
                 }
             }
+
+
         }
 
         if (ciz || cde || cab || car){
@@ -226,12 +246,12 @@ public class Juego extends Escena {
             }
 
         }
-
+//
         if(!ciz && !cde && !cab && !car){
-            if (arr) {y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);}
-            if (aba) {y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);}
-            if (der) {x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);}
-            if (izz) {x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);}
+            if (arr && y+nick.actual[0].getHeight()/2<0) {y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);}
+            if (aba && y+mapa.getHeight()-nick.actual[0].getHeight()>=altoPantalla) {y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);}
+            if (der && x+mapa.getWidth()>=anchoPantalla) {x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);}
+            if (izz && x+nick.actual[0].getWidth()*2<0) {x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);}
 
         }
 
@@ -275,6 +295,7 @@ public class Juego extends Escena {
                     }
 
                     if(ataque.contains((int) event.getX(),(int) event.getY())){
+                        nick.spellHit=false;
                         nick.isFigthing=true;
                         spell = new Spell(nick.spellFrozen?frost:fire,anchoPantalla/2,nick.spellFrozen?(altoPantalla/2+getPixels(20)):(altoPantalla/2+getPixels(40)));
                         nick.setSpell(spell);

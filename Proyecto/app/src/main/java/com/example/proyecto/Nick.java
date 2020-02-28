@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 
 public class Nick extends Personaje{
     int vidas=3;
-    boolean spellFrozen=false,isFigthing=false;
+    boolean spellFrozen=false,isFigthing=false,spellHit=false;
     Frames framesAttack;
     long tiempo=0;
     int tick=250;
@@ -39,7 +39,7 @@ public class Nick extends Personaje{
     @Override
     public void dibujar(Canvas c) {
 
-        if(isFigthing){
+        if(isFigthing && !spellHit){
             spell.dibujar(c,paint);
             if(direccion==Direccion.izquierda){
                 actual=framesAttack.iz;
