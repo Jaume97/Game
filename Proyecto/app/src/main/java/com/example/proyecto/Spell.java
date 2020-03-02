@@ -45,4 +45,7 @@ public class Spell {
     public void removeSpell(){
         heatbox=null;
     }
+    public Rect clonaRect(){
+        return new Rect(heatbox.left, heatbox.top,heatbox.right,heatbox.bottom);
+    }
 }

@@ -130,4 +130,7 @@ public class Personaje {
     public void actualizoRext(){
         hitbox=new Rect((int)posX,(int)posY,(int)posX+actual[0].getWidth(),(int)posY+actual[0].getHeight());
     }
+    public void removeHitbox(){
+        hitbox=null;
+    }
 }

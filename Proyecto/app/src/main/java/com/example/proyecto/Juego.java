@@ -13,7 +13,7 @@ public class Juego extends Escena {
     Jormunand jormunand;
     LibroIce libroIce;
     Nick nick;
-
+    Esqueleto esqueleto;
     Bitmap[] fire={escalaAltura(getBitmapFromAssets("flame_0_fixed.png"),altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_1_fixed.png"),
             altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_2_fixed.png"),altoPantalla/8)};
 
@@ -28,8 +28,8 @@ public class Juego extends Escena {
     Bitmap[] cloudIce={escalaAnchura(getBitmapFromAssets("cloud_cold_0.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_cold_1.png"),anchoPantalla/5),
             escalaAnchura(getBitmapFromAssets("cloud_cold_2.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_cold_1.png"),anchoPantalla/5),
             escalaAnchura(getBitmapFromAssets("cloud_cold_0.png"),anchoPantalla/5)};
-    Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen,imagenes_attack;
-    Rect izquierda,derecha,arriba,abajo,ataque,rectMapa;
+    Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen,imagenes_attack,imagen_zombieAndEsqueleto;
+    Rect izquierda,derecha,arriba,abajo,ataque,juegoFinal;
     int tick=200,distanciaPaso;
     long tiempo=0;
     int frame=0;
@@ -38,8 +38,8 @@ public class Juego extends Escena {
     boolean arr=false, aba=false, der=false, izz=false;
     int cruceY, cruceX,posicionXBook,posicionYBook;
 
-
     boolean ciz=false,cde=false,car=false,cab=false;
+    boolean isHitting=false,gameEnd=false,uDie=false;
     int pasoColision=10;
     int tickColision=10;
     long tcoli=0, tinicoli=0;
@@ -48,6 +48,7 @@ public class Juego extends Escena {
     Spell spell;
     public Juego(int numeroEscena, Bitmap fondo, Context context, int anchoPantalla, int altoPantalla) {
         super(numeroEscena, fondo, context, anchoPantalla, altoPantalla);
+        gameEnd=false;
         //Sprite Jormunand
         imagenes_Jormunand=getBitmapFromAssets("flying_dragon-red.png");
         //Sprite Nick
@@ -63,6 +64,8 @@ public class Juego extends Escena {
         //BookFrozen
         bookFrozen=getBitmapFromAssets("bookice.png");
         bookFrozen=escalaAnchura(bookFrozen,anchoPantalla/15);
+        //Sprite Zombie y Esqueleto
+        imagen_zombieAndEsqueleto=getBitmapFromAssets("golem_walk_fixed.png");
 
         distanciaPaso=getPixels(5);
         x=anchoPantalla*-2;
@@ -77,7 +80,6 @@ public class Juego extends Escena {
         mapa=getBitmapFromAssets("mapa.png");
         mapa=escalaAnchura(mapa,anchoPantalla*4);
 
-        rectMapa= new Rect(x,y,x+mapa.getWidth(),y+mapa.getHeight());
 
         imgCruceta=getBitmapFromAssets("dpad.png");
         imgCruceta=escalaAltura(imgCruceta,altoPantalla/4);
@@ -97,7 +99,7 @@ public class Juego extends Escena {
         cruceX=0;
 
 
-
+        juegoFinal=new Rect(0,0,anchoPantalla,altoPantalla);
 
         izquierda=new Rect(cruceX,(int)(cruceY+porSize1*imgCruceta.getHeight()),cruceX+(int)(porSize1*imgCruceta.getWidth()),
                 cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()));
@@ -113,10 +115,11 @@ public class Juego extends Escena {
         ataque= new Rect(anchoPantalla-imgAttack.getWidth(),altoPantalla-imgAttack.getHeight(),anchoPantalla,altoPantalla);
 
         jormunand= new Jormunand(context,imagenes_Jormunand,altoPantalla,anchoPantalla,0,0,3,4,3,4,200,200,3,cloudFire,cloudIce);
+        jormunand.isAlive=false;
 
         nick=new Nick(context,imagenes_Nick,altoPantalla,anchoPantalla,0,0,3,4,3,4,anchoPantalla/2,altoPantalla/2,4,imagenes_attack);
 
-
+        esqueleto= new Esqueleto(context,imagen_zombieAndEsqueleto,altoPantalla,anchoPantalla,0,0,7,4,7,4,1200,1200,3,cloudFire,cloudIce);
         Log.i("tamaño","PosXMapa:"+x+"");
     }
 
@@ -125,7 +128,6 @@ public class Juego extends Escena {
         super.dibujar(c);
         c.drawColor(Color.BLACK);
         //JUEGO
-        c.drawRect(rectMapa,paint);
         c.drawBitmap(mapa,x,y,null);
 
         switch(nick.getVidas()){
@@ -153,7 +155,13 @@ public class Juego extends Escena {
 
 
         nick.dibujar(c);
-        jormunand.dibujar(c);
+        if(jormunand.isAlive){
+            jormunand.dibujar(c);
+        }
+        if(esqueleto.isAlive){
+            esqueleto.dibujar(c);
+        }
+
 
         if(!nick.spellFrozen){
             libroIce.dibujar(c,paint);
@@ -168,93 +176,136 @@ public class Juego extends Escena {
         c.drawRect(abajo,paint);
         c.drawRect(ataque,paint);
 
+        if(gameEnd){
+            if(uDie){
+                c.drawText("MoRISTE",anchoPantalla/2,altoPantalla/2,lapiz);
+            }else{
+                c.drawText("GANASTE",anchoPantalla/2,altoPantalla/2,lapiz);
+            }
+            c.drawRect(juegoFinal,paint);
+        }
+
 
     }
 
     @Override
     public void actualizarFisica() {
         super.actualizarFisica();
-        jormunand.actualizaFisica();
-        nick.actualizaFisica();
-        if(libroIce.heatbox!=null){
-            if(nick.clonaRect().intersect(libroIce.heatbox)){
-                nick.spellFrozen=true;
-                libroIce.removeBook();
+        if(!gameEnd){
+            if(jormunand.isAlive){
+                jormunand.actualizaFisica();
             }
-        }
-        if(jormunand.clonaRect()!=null) {
-            //Deteccion de colisiones cuerpo a cuerpo
-            if (nick.clonaRect().intersect(jormunand.clonaRect())) {
-                tinicoli = System.currentTimeMillis();
-                vibrator.vibrate(100);
-                switch (nick.direccion) {
-                    case izquierda:
-                        if (!ciz)nick.setVidas(nick.getVidas() - 1);
-                        ciz=true;
-                        break;
-                    case derecha:
-                        if (!cde)nick.setVidas(nick.getVidas() - 1);
-                        cde=true;
-                        break;
-                    case abajo:
-                        if (!cab)nick.setVidas(nick.getVidas() - 1);
-                        cab=true;
-                        break;
-                    case arriba:
-                        if (!car)nick.setVidas(nick.getVidas() - 1);
-                        car=true;
-                        break;
-                }
+            if(esqueleto.isAlive){
+                esqueleto.actualizaFisica();
+            }
+            nick.actualizaFisica();
 
+            if(libroIce.heatbox!=null){
+                if(nick.clonaRect().intersect(libroIce.heatbox)){
+                    nick.spellFrozen=true;
+                    libroIce.removeBook();
+                }
             }
-            if(nick.isFigthing){
-                if(jormunand.clonaRect().intersect(nick.spell.heatbox)){
-                    Log.i("coli","colisionSpell");
-                    if(!nick.spellFrozen){
-                        jormunand.isHurtWhitFire=true;
-                        jormunand.vidas--;
-                    }else{
-                        jormunand.isHurtWhitIce=true;
-                        jormunand.vidas--;
+            if(jormunand.clonaRect()!=null || jormunand.clonaRect()!=null) {
+                //Deteccion de colisiones cuerpo a cuerpo
+                if ((nick.clonaRect().intersect(jormunand.clonaRect()) && jormunand.isAlive)|| (nick.clonaRect().intersect(esqueleto.clonaRect()) && esqueleto.isAlive)) {
+                    tinicoli = System.currentTimeMillis();
+                    vibrator.vibrate(100);
+                    switch (nick.direccion) {
+                        case izquierda:
+                            if (!ciz)nick.setVidas(nick.getVidas() - 1);
+                            ciz=true;
+                            break;
+                        case derecha:
+                            if (!cde)nick.setVidas(nick.getVidas() - 1);
+                            cde=true;
+                            break;
+                        case abajo:
+                            if (!cab)nick.setVidas(nick.getVidas() - 1);
+                            cab=true;
+                            break;
+                        case arriba:
+                            if (!car)nick.setVidas(nick.getVidas() - 1);
+                            car=true;
+                            break;
                     }
-                    nick.spellHit=true;
-                }
-            }
-
-
-        }
-
-        if (ciz || cde || cab || car){
-            if (System.currentTimeMillis() -tinicoli>ttotal){
-                ciz=false;
-                cde=false;
-                cab=false;
-                car=false;
-            }else {
-                if (System.currentTimeMillis() - tcoli > tickColision) {
-                    if(ciz){
-                        x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);
-                    }else if(cde){
-                        x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);
-                    }else if(cab){
-                        y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);
-                    }else if(car){
-                        y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);
+                    if(nick.getVidas()==0){
+                        uDie=true;
+                        gameEnd=true;
                     }
 
                 }
+                if(nick.isFigthing){
+                    if(jormunand.clonaRect().intersect(nick.spell.clonaRect()) && jormunand.isAlive && !isHitting){
+                        isHitting=true;
+                        if(!nick.spellFrozen){
+                            jormunand.isHurtWhitFire=true;
+                            jormunand.vidas--;
+                        }else{
+                            jormunand.isHurtWhitIce=true;
+                            jormunand.vidas--;
+                        }
+                        Log.i("coli","colisionSpell,vidasJor:"+jormunand.vidas);
+                        nick.spellHit=true;
+                        //MUERTE
+                        if(jormunand.vidas==0){
+                            jormunand.isAlive=false;
+                            gameEnd=true;
+                        }
+                    }
+                    if(esqueleto.clonaRect().intersect(nick.spell.clonaRect()) && esqueleto.isAlive && !isHitting){
+                        isHitting=true;
+                        nick.spellHit=true;
+
+                        if(!nick.spellFrozen){
+                            esqueleto.isHurtWhitFire=true;
+                            esqueleto.vidas--;
+                        }else{
+                            esqueleto.isHurtWhitIce=true;
+                            esqueleto.vidas--;
+                        }
+                        Log.i("coli","colisionSpell,vidasEsqueleto:"+esqueleto.vidas);
+                        //MUERTE
+                        if(esqueleto.vidas==0){
+                            esqueleto.isAlive=false;
+                            jormunand.isAlive=true;
+                        }
+                    }
+                }
+
             }
 
-        }
+            if (ciz || cde || cab || car){
+                if (System.currentTimeMillis() -tinicoli>ttotal){
+                    ciz=false;
+                    cde=false;
+                    cab=false;
+                    car=false;
+                }else {
+                    if (System.currentTimeMillis() - tcoli > tickColision) {
+                        if(ciz){
+                            x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);esqueleto.mueveX(-distanciaPaso);
+                        }else if(cde){
+                            x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);esqueleto.mueveX(distanciaPaso);
+                        }else if(cab){
+                            y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);esqueleto.mueveY(distanciaPaso);
+                        }else if(car){
+                            y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);esqueleto.mueveY(-distanciaPaso);
+                        }
+
+                    }
+                }
+
+            }
 //
-        if(!ciz && !cde && !cab && !car){
-            if (arr && y+nick.actual[0].getHeight()/2<0) {y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);}
-            if (aba && y+mapa.getHeight()-nick.actual[0].getHeight()>=altoPantalla) {y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);}
-            if (der && x+mapa.getWidth()>=anchoPantalla) {x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);}
-            if (izz && x+nick.actual[0].getWidth()*2<0) {x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);}
+            if(!ciz && !cde && !cab && !car){
+                if (arr && y+nick.actual[0].getHeight()/2<0) {y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);esqueleto.mueveY(distanciaPaso);}
+                if (aba && y+mapa.getHeight()-nick.actual[0].getHeight()>=altoPantalla) {y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);esqueleto.mueveY(-distanciaPaso);}
+                if (der && x+mapa.getWidth()>=anchoPantalla) {x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);esqueleto.mueveX(-distanciaPaso);}
+                if (izz && x+nick.actual[0].getWidth()*2<0) {x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);esqueleto.mueveX(distanciaPaso);}
 
+            }
         }
-
 
     }
 
@@ -297,8 +348,12 @@ public class Juego extends Escena {
                     if(ataque.contains((int) event.getX(),(int) event.getY())){
                         nick.spellHit=false;
                         nick.isFigthing=true;
+                        isHitting=false;
                         spell = new Spell(nick.spellFrozen?frost:fire,anchoPantalla/2,nick.spellFrozen?(altoPantalla/2+getPixels(20)):(altoPantalla/2+getPixels(40)));
                         nick.setSpell(spell);
+                    }
+                    if(juegoFinal.contains((int) event.getX(),(int) event.getY()) && gameEnd){
+                        return 1;
                     }
                     break;
                 case MotionEvent.ACTION_UP:
