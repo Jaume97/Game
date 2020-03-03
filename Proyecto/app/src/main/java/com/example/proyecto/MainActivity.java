@@ -51,9 +51,6 @@ getSupportActionBar().hide();
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             decorView.setSystemUiVisibility(opciones);
         getSupportActionBar().hide();
-//       PantallaInicioSurface pantallaInicioSurface=new PantallaInicioSurface(this);
-//       pantallaInicioSurface.setKeepScreenOn(true);
-//       setContentView(pantallaInicioSurface);
 
 
 

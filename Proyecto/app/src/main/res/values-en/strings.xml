@@ -9,4 +9,10 @@
     <string name="VIBRACION">VIBRATION</string>
     <string name="VOLUMEN">SOUND</string>
     <string name="Idioma">LANGUAGE</string>
+    <string name="CreditosJormunand">This is the mortal enemy of Nick, destroy them for your desire revenge</string>
+    <string name="CreditosNick">This is the protagonist of the game, you must carry to quench his revenge by casting spells</string>
+    <string name="CreditosPad">This is nick\'s motion control, enjoy it!</string>
+    <string name="Muerte">YOU DIE</string>
+    <string name="Win">YOU WIN!</string>
+    <string name="CreditosCorazon">Nick\'s life, appears in the upper left corner of the device, you start whit three lives that are decreasing as you suffer damage</string>
 </resources>

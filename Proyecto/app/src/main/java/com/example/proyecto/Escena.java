@@ -24,8 +24,9 @@ public class Escena {
     int numeroEscena;
     Context context;
     int altoPantalla,anchoPantalla;
-    Bitmap fondo,home,back;
+    Bitmap fondo,home;
     Vibrator vibrator;
+    Typeface faw;
     Paint lapiz,paint;
 //    public boolean vibra=true,volu=true,idiomaEspañol=false;
     Rect atras;
@@ -41,17 +42,21 @@ public class Escena {
 
         preferences=context.getSharedPreferences("preferencias",context.MODE_PRIVATE);
         editor=preferences.edit();
-        editor.putBoolean("vibra",true);
-        editor.putBoolean("volu",true);
-        editor.putBoolean("idioma",false);
-        editor.commit();
+        if(!preferences.contains("idioma")){
+            editor.putBoolean("idioma",false);
+            editor.putBoolean("vibra",true);
+            editor.putBoolean("volu",true);
+            editor.commit();
+        }
+        changeLanguage(preferences.getBoolean("idioma",false)?"es":"en");
+
 
         vibrator= (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
 
         lapiz=new Paint();
         lapiz.setTextSize(90);
         lapiz.setColor(Color.BLACK);
-        Typeface faw = Typeface.createFromAsset(context.getAssets(), "fonts/Avara.ttf");
+        faw = Typeface.createFromAsset(context.getAssets(), "fonts/Avara.ttf");
         lapiz.setTypeface(faw);
         lapiz.setTextAlign(Paint.Align.CENTER);
 
@@ -61,9 +66,8 @@ public class Escena {
         paint.setStrokeWidth(getPixels(2));
 
 
-        home=getBitmapFromAssets("back.png");
-        back=Bitmap.createScaledBitmap(home,this.anchoPantalla/9,this.altoPantalla/9,false);
-        atras= new Rect(0,0,anchoPantalla/8*1,altoPantalla/7*1);
+        home=escalaAltura(getBitmapFromAssets("back.png"),altoPantalla/6);
+        atras= new Rect(0,0,home.getWidth(),home.getHeight());
 
     }
     public Bitmap getBitmapFromAssets(String fichero) {
@@ -110,7 +114,7 @@ public class Escena {
         }
         if(numeroEscena!=2 && numeroEscena!=1){
             c.drawRect(atras,paint);
-            c.drawBitmap(back,0,0,null);
+            c.drawBitmap(home,0,0,null);
         }
     }
 

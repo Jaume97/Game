@@ -48,6 +48,7 @@ public class Juego extends Escena {
     Spell spell;
     public Juego(int numeroEscena, Bitmap fondo, Context context, int anchoPantalla, int altoPantalla) {
         super(numeroEscena, fondo, context, anchoPantalla, altoPantalla);
+
         gameEnd=false;
         //Sprite Jormunand
         imagenes_Jormunand=getBitmapFromAssets("flying_dragon-red.png");
@@ -99,7 +100,7 @@ public class Juego extends Escena {
         cruceX=0;
 
 
-        juegoFinal=new Rect(0,0,anchoPantalla,altoPantalla);
+        juegoFinal=new Rect(anchoPantalla/10*3,altoPantalla/10*3,anchoPantalla/10*7,altoPantalla/10*7);
 
         izquierda=new Rect(cruceX,(int)(cruceY+porSize1*imgCruceta.getHeight()),cruceX+(int)(porSize1*imgCruceta.getWidth()),
                 cruceY+imgCruceta.getHeight()-(int)(porSize1*imgCruceta.getHeight()));
@@ -178,9 +179,9 @@ public class Juego extends Escena {
 
         if(gameEnd){
             if(uDie){
-                c.drawText("MoRISTE",anchoPantalla/2,altoPantalla/2,lapiz);
+                c.drawText(context.getResources().getString(R.string.Muerte),anchoPantalla/2,altoPantalla/2,lapiz);
             }else{
-                c.drawText("GANASTE",anchoPantalla/2,altoPantalla/2,lapiz);
+                c.drawText(context.getResources().getString(R.string.Win),anchoPantalla/2,altoPantalla/2,lapiz);
             }
             c.drawRect(juegoFinal,paint);
         }
@@ -352,13 +353,13 @@ public class Juego extends Escena {
                         spell = new Spell(nick.spellFrozen?frost:fire,anchoPantalla/2,nick.spellFrozen?(altoPantalla/2+getPixels(20)):(altoPantalla/2+getPixels(40)));
                         nick.setSpell(spell);
                     }
-                    if(juegoFinal.contains((int) event.getX(),(int) event.getY()) && gameEnd){
-                        return 1;
-                    }
+
                     break;
                 case MotionEvent.ACTION_UP:
                     paro();
-
+                    if(juegoFinal.contains((int) event.getX(),(int) event.getY()) && gameEnd){
+                        return 1;
+                    }
                     break;
             }
         }

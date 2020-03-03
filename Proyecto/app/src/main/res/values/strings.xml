@@ -8,4 +8,11 @@
     <string name="VIBRACION">VIBRACIÓN</string>
     <string name="VOLUMEN">VOLUMEN</string>
     <string name="Idioma">IDIOMA</string>
+    <string name="CreditosJormunand">Este es el enemigo mortal de Nick.acaba con el para cumplir tu ansiada venganza</string>
+
+    <string name="CreditosNick">Este es el protagonista del juego, debes llevarlo para saciar su venganza lanzando hechizos</string>
+    <string name="CreditosPad">Este es el control del movimiento de Nick, dirigelo a tu gusto!</string>
+    <string name="Muerte">HAS MUERTO</string>
+    <string name="Win">HAS GANADO!</string>
+    <string name="CreditosCorazon">La vida de Nick, aparece en la esquina superior izquierda del dispositivo, empiezas con tres vidas que van disminullendo a medida que sufres daño.</string>
 </resources>
