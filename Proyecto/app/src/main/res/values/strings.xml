@@ -17,4 +17,6 @@
     <string name="CreditosCorazon">La vida de Nick, aparece en la esquina superior izquierda del dispositivo, empiezas con tres vidas que van disminullendo a medida que sufres daño.</string>
     <string name="Book">Este es el Grimorio de hielo, con este libro Nick aprendera a usar hielo y sus hechizos se volverian frios, encuentralo en los alrededores del mapa!</string>
     <string name="CreditosPadAttack">Este es el Boton de ataque de Nick, por defecto lanza fuego, pero si capturas el grimorio,este lanza hielo!</string>
+    <string name="por">por</string>
+    <string name="licencia">licencia</string>
 </resources>

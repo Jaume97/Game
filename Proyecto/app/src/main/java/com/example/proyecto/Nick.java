@@ -3,6 +3,8 @@ package com.example.proyecto;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.media.AudioManager;
+import android.media.SoundPool;
 
 public class Nick extends Personaje{
     int vidas=3;
@@ -12,6 +14,7 @@ public class Nick extends Personaje{
     int tick=250;
     int frameAttack =0;
     float posXCopy;
+
     Spell spell;
 
     public Spell getSpell() {
@@ -34,6 +37,8 @@ public class Nick extends Personaje{
         super(context,imagenes, altoPantalla, anchoPantalla, indiceX, indiceY, cantidadFramesX, cantidadFramesY, framesCojerX, framesCojerY, posx, posY,tamañoEscalado);
         framesAttack=getImagenes(imagenAtaque,0,0,7,4,7,4,4);
         posXCopy=posX;
+
+
     }
 
     @Override
@@ -54,6 +59,7 @@ public class Nick extends Personaje{
                 actual=framesAttack.ab;
                 spell.sumaY(getPixels(5));
             }
+
 
         }
         super.dibujar(c);

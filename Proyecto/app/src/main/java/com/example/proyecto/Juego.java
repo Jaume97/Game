@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -14,6 +16,13 @@ public class Juego extends Escena {
     LibroIce libroIce;
     Nick nick;
     Esqueleto esqueleto;
+
+    AudioManager audioManager;
+    SoundPool efectos;
+    int sonidoFire,sonidoIce;
+    final int maxSonidos=10;
+    int v;
+
     Bitmap[] fire={escalaAltura(getBitmapFromAssets("flame_0_fixed.png"),altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_1_fixed.png"),
             altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_2_fixed.png"),altoPantalla/8)};
 
@@ -72,7 +81,11 @@ public class Juego extends Escena {
         x=anchoPantalla*-2;
         y=altoPantalla*-2;
 
-
+        audioManager=(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        efectos=new SoundPool(maxSonidos, AudioManager.STREAM_MUSIC,0);
+        sonidoFire=efectos.load(context,R.raw.fire_sound,1);
+        sonidoIce=efectos.load(context,R.raw.snow_sound,1);
+        v=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 
         libroIce=new LibroIce(bookFrozen,-1000,-1000,(heartFull.getWidth()+getPixels(1.5f))*3);
 
@@ -366,6 +379,13 @@ public class Juego extends Escena {
                         isHitting=false;
                         spell = new Spell(nick.spellFrozen?frost:fire,anchoPantalla/2,nick.spellFrozen?(altoPantalla/2+getPixels(20)):(altoPantalla/2+getPixels(40)));
                         nick.setSpell(spell);
+
+                        if(nick.spellFrozen){
+
+                            efectos.play(sonidoIce,v,v,1,0,1);
+                        }else{
+                            efectos.play(sonidoFire,v,v,1,0,1);
+                        }
                     }
 
                     break;

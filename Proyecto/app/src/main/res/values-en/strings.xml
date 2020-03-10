@@ -17,4 +17,6 @@
     <string name="CreditosCorazon">Nick\'s life, appears in the upper left corner of the device, you start whit three lives that are decreasing as you suffer damage</string>
     <string name="Book">This is the grimoire of ice, whit this book Nick will learn to use ice and his spells will become cold, find it around the map!</string>
     <string name="CreditosPadAttack">This is Nick attack button, by default it throws fire, but if you catch the grimoire, this throws ice!</string>
+    <string name="por">by</string>
+    <string name="licencia">licensed</string>
 </resources>
