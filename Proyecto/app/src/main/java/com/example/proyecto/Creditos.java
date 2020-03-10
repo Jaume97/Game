@@ -3,6 +3,7 @@ package com.example.proyecto;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 
 public class Creditos extends Escena {
     public Creditos(int numeroEscena, Bitmap fondo, Context context, int anchoPantalla, int altoPantalla) {
@@ -15,4 +16,11 @@ public class Creditos extends Escena {
 
     }
 
+    @Override
+    public int onTouchEvent(MotionEvent event) {
+        if(atras.contains((int) event.getX(),(int) event.getY())){
+            return 1;
+        }
+        return  numeroEscena;
+    }
 }

@@ -34,6 +34,7 @@ public class Pantalla extends SurfaceView implements SurfaceHolder.Callback {
         this.surfaceHolder = getHolder();
         this.surfaceHolder.addCallback(this);
         mediaPlayer= MediaPlayer.create(context,R.raw.menutheme);
+        mediaPlayer.setLooping(true);
 
         hilo=new Hilo();
         setFocusable(true);

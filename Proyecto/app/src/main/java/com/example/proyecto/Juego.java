@@ -211,7 +211,10 @@ public class Juego extends Escena {
                 //Deteccion de colisiones cuerpo a cuerpo
                 if ((nick.clonaRect().intersect(jormunand.clonaRect()) && jormunand.isAlive)|| (nick.clonaRect().intersect(esqueleto.clonaRect()) && esqueleto.isAlive)) {
                     tinicoli = System.currentTimeMillis();
-                    vibrator.vibrate(100);
+                    if(preferences.getBoolean("vibra",true)){
+                        vibrator.vibrate(100);
+                    }
+
                     switch (nick.direccion) {
                         case izquierda:
                             if (!ciz)nick.setVidas(nick.getVidas() - 1);
@@ -284,29 +287,40 @@ public class Juego extends Escena {
                     car=false;
                 }else {
                     if (System.currentTimeMillis() - tcoli > tickColision) {
-                        if(ciz){
-                            x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);esqueleto.mueveX(-distanciaPaso);
-                        }else if(cde){
-                            x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);esqueleto.mueveX(distanciaPaso);
-                        }else if(cab){
-                            y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);esqueleto.mueveY(distanciaPaso);
-                        }else if(car){
-                            y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);esqueleto.mueveY(-distanciaPaso);
-                        }
-
+                        if(ciz){movimientoPersonajes("mIzquierda");}
+                        else if(cde){movimientoPersonajes("mDerecha");}
+                        else if(cab){movimientoPersonajes("mAbajo");}
+                        else if(car){movimientoPersonajes("mArriba");}
                     }
                 }
 
             }
 //
             if(!ciz && !cde && !cab && !car){
-                if (arr && y+nick.actual[0].getHeight()/2<0) {y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);esqueleto.mueveY(distanciaPaso);}
-                if (aba && y+mapa.getHeight()-nick.actual[0].getHeight()>=altoPantalla) {y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);esqueleto.mueveY(-distanciaPaso);}
-                if (der && x+mapa.getWidth()>=anchoPantalla) {x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);esqueleto.mueveX(-distanciaPaso);}
-                if (izz && x+nick.actual[0].getWidth()*2<0) {x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);esqueleto.mueveX(distanciaPaso);}
-
+                if (arr && y+nick.actual[0].getHeight()/2<0) {movimientoPersonajes("mAbajo");}
+                if (aba && y+mapa.getHeight()-nick.actual[0].getHeight()>=altoPantalla) {movimientoPersonajes("mArriba");}
+                if (der && x+mapa.getWidth()>=anchoPantalla) {movimientoPersonajes("mIzquierda");}
+                if (izz && x+nick.actual[0].getWidth()*2<0) {movimientoPersonajes("mDerecha");}
             }
         }
+
+    }
+    public void movimientoPersonajes(String flag){
+
+            switch (flag){
+                case "mIzquierda":
+                    x-=distanciaPaso;jormunand.mueveX(-distanciaPaso);libroIce.sumaX(-distanciaPaso);esqueleto.mueveX(-distanciaPaso);
+                    break;
+                case "mDerecha":
+                    x+=distanciaPaso;jormunand.mueveX(distanciaPaso);libroIce.sumaX(distanciaPaso);esqueleto.mueveX(distanciaPaso);
+                    break;
+                case "mAbajo":
+                    y+=distanciaPaso;jormunand.mueveY(distanciaPaso);libroIce.sumaY(distanciaPaso);esqueleto.mueveY(distanciaPaso);
+                    break;
+                case "mArriba":
+                    y-=distanciaPaso;jormunand.mueveY(-distanciaPaso);libroIce.sumaY(-distanciaPaso);esqueleto.mueveY(-distanciaPaso);
+                    break;
+            }
 
     }
 
