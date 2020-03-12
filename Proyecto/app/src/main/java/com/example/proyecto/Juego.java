@@ -6,9 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 
 public class Juego extends Escena {
@@ -16,7 +19,7 @@ public class Juego extends Escena {
     LibroIce libroIce;
     Nick nick;
     Esqueleto esqueleto;
-
+    MediaPlayer mediaPlayer;
     AudioManager audioManager;
     SoundPool efectos;
     int sonidoFire,sonidoIce;
@@ -59,6 +62,8 @@ public class Juego extends Escena {
         super(numeroEscena, fondo, context, anchoPantalla, altoPantalla);
 
         gameEnd=false;
+        uDie=false;
+
         //Sprite Jormunand
         imagenes_Jormunand=getBitmapFromAssets("flying_dragon-red.png");
         //Sprite Nick
@@ -85,8 +90,8 @@ public class Juego extends Escena {
         efectos=new SoundPool(maxSonidos, AudioManager.STREAM_MUSIC,0);
         sonidoFire=efectos.load(context,R.raw.fire_sound,1);
         sonidoIce=efectos.load(context,R.raw.snow_sound,1);
-        v=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-
+//        v=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        v=1;
         libroIce=new LibroIce(bookFrozen,-1000,-1000,(heartFull.getWidth()+getPixels(1.5f))*3);
 
         //Mapa
@@ -195,6 +200,7 @@ public class Juego extends Escena {
                 c.drawText(context.getResources().getString(R.string.Muerte),anchoPantalla/2,altoPantalla/2,lapiz);
             }else{
                 c.drawText(context.getResources().getString(R.string.Win),anchoPantalla/2,altoPantalla/2,lapiz);
+
             }
             c.drawRect(juegoFinal,paint);
         }
@@ -267,6 +273,7 @@ public class Juego extends Escena {
                         //MUERTE
                         if(jormunand.vidas==0){
                             jormunand.isAlive=false;
+                            Log.i("fin","acabao con jor");
                             gameEnd=true;
                         }
                     }
@@ -347,56 +354,63 @@ public class Juego extends Escena {
 
     @Override
     public int onTouchEvent(MotionEvent event) {
-        if(!nick.isFigthing){
+
             switch (event.getAction()){
                 case MotionEvent.ACTION_MOVE:
                 case MotionEvent.ACTION_DOWN:
-                    if(izquierda.contains((int) event.getX(),(int) event.getY())){
-                        paro();
-                        izz=true;
-                        nick.direccion=Direccion.izquierda;
-                        nick.actual=nick.frames.iz;
-                    }else if(derecha.contains((int) event.getX(),(int) event.getY())){
-                        paro();
-                        der=true;
-                        nick.direccion=Direccion.derecha;
-                        nick.actual=nick.frames.de;
-                    }else if(arriba.contains((int) event.getX(),(int) event.getY())){
-                        paro();
-                        arr=true;
-                        nick.direccion=Direccion.arriba;
-                        nick.actual=nick.frames.ar;
-                    }else if(abajo.contains((int) event.getX(),(int) event.getY())){
-                        paro();
-                        aba=true;
-                        nick.direccion=Direccion.abajo;
-                        nick.actual=nick.frames.ab;
-                    }
+                    if(!nick.isFigthing){
+                        if(izquierda.contains((int) event.getX(),(int) event.getY())){
+                            paro();
+                            izz=true;
+                            nick.direccion=Direccion.izquierda;
+                            nick.actual=nick.frames.iz;
+                        }else if(derecha.contains((int) event.getX(),(int) event.getY())){
+                            paro();
+                            der=true;
+                            nick.direccion=Direccion.derecha;
+                            nick.actual=nick.frames.de;
+                        }else if(arriba.contains((int) event.getX(),(int) event.getY())){
+                            paro();
+                            arr=true;
+                            nick.direccion=Direccion.arriba;
+                            nick.actual=nick.frames.ar;
+                        }else if(abajo.contains((int) event.getX(),(int) event.getY())){
+                            paro();
+                            aba=true;
+                            nick.direccion=Direccion.abajo;
+                            nick.actual=nick.frames.ab;
+                        }
 
-                    if(ataque.contains((int) event.getX(),(int) event.getY())){
-                        nick.spellHit=false;
-                        nick.isFigthing=true;
-                        isHitting=false;
-                        spell = new Spell(nick.spellFrozen?frost:fire,anchoPantalla/2,nick.spellFrozen?(altoPantalla/2+getPixels(20)):(altoPantalla/2+getPixels(40)));
-                        nick.setSpell(spell);
+                        if(ataque.contains((int) event.getX(),(int) event.getY())){
+                            nick.spellHit=false;
+                            nick.isFigthing=true;
+                            isHitting=false;
+                            spell = new Spell(nick.spellFrozen?frost:fire,anchoPantalla/2,nick.spellFrozen?(altoPantalla/2+getPixels(20)):(altoPantalla/2+getPixels(40)));
+                            nick.setSpell(spell);
 
-                        if(nick.spellFrozen){
+                            if(preferences.getBoolean("volu",true)){
+                                if(nick.spellFrozen){
 
-                            efectos.play(sonidoIce,v,v,1,0,1);
-                        }else{
-                            efectos.play(sonidoFire,v,v,1,0,1);
+                                    efectos.play(sonidoIce,v,v,1,0,1);
+                                }else{
+                                    efectos.play(sonidoFire,v,v,1,0,1);
+                                }
+                            }
+
                         }
                     }
+
 
                     break;
                 case MotionEvent.ACTION_UP:
                     paro();
+                    Log.i("fin",""+gameEnd+":"+uDie);
                     if(juegoFinal.contains((int) event.getX(),(int) event.getY()) && gameEnd){
                         return 1;
                     }
                     break;
             }
-        }
+
 
         return numeroEscena;
     }

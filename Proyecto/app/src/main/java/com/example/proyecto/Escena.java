@@ -28,7 +28,6 @@ public class Escena {
     Vibrator vibrator;
     Typeface faw;
     Paint lapiz,paint;
-//    public boolean vibra=true,volu=true,idiomaEspañol=false;
     Rect atras;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -136,7 +135,6 @@ public class Escena {
         res.updateConfiguration(conf, dm);
     }
 
-    //Preguntar a javi que deberia de poner en este metodo que no hace nada pero es necesario para sobreescribirlo luego.
     /**
      * Evento de pulsacion que devuelve un valor
      * @param event

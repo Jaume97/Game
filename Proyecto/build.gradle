@@ -1,6 +1,8 @@
 ext {
     var = 17
     var1 = var
+    var2 = 21
+    var3 = 23
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
