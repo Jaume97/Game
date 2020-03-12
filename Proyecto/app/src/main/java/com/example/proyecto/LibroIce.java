@@ -5,6 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+/**
+ * Clase del grimorio de hielo.
+ */
 public class LibroIce {
     Bitmap image;
     int posX,posY,posXHUD;
@@ -31,7 +34,6 @@ public class LibroIce {
      * @param paint
      */
     public void dibujar(Canvas c,Paint paint){
-        //heatbox=new Rect(posX,posY,posX+image.getWidth(),posY+image.getHeight());
         c.drawRect(heatbox,paint);
         c.drawBitmap(image,posX,posY,null);
     }

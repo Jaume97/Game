@@ -11,12 +11,28 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.view.MotionEvent;
 
+/**
+ * Clase donde se alamacena el tutorial del juego.
+ */
 public class Tutorial extends Escena {
+    //Imagenes de los elementos del juego.
     Bitmap jor,nick,pad,corasao,bookIce,padAttack;
+    //Textos explicativos de los distintos elementos
     StaticLayout textLayoutJor,textLayoutNick,textLayoutPad,textlayoutCorason,textLayoutBook,textLayoutPadAttack;
+    //el lapiz del dibujo del propio texto explicativo.
     TextPaint textPaint;
+    //posicion inicial del flip
     float dy=0;
     float positionY=0;
+
+    /**
+     * Inicializa las propiedades a los parametros.
+     * @param numeroEscena
+     * @param fondo
+     * @param context
+     * @param anchoPantalla
+     * @param altoPantalla
+     */
     public Tutorial(int numeroEscena, Bitmap fondo, Context context, int anchoPantalla, int altoPantalla) {
         super(numeroEscena, fondo, context, anchoPantalla, altoPantalla);
 
@@ -42,50 +58,54 @@ public class Tutorial extends Escena {
         textLayoutPadAttack=new StaticLayout(context.getResources().getString(R.string.CreditosPadAttack),textPaint,anchoPantalla-anchoPantalla/5*2-getPixels(25), Layout.Alignment.ALIGN_NORMAL,1.0f,0.0f,false);
     }
 
+    /**
+     * Dibuja los textos explicativos junto con las imagenes de los elementos del juego.
+     * @param c
+     */
     @Override
-    public void dibujar(Canvas c) {//context.getResources().getString(R.string.CreditosJormunand)
+    public void dibujar(Canvas c) {
         super.dibujar(c);
         c.drawBitmap(jor,anchoPantalla/5*1,dy+0,null);
 
-        c.save(); // guardamos el lienzo
-        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()/4); // Movemos el lienzo
-        textLayoutJor.draw(c); // Dibujamos el texto
-        c.restore(); // Recuperamos el lienzo a su posición original
+        c.save();
+        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()/4);
+        textLayoutJor.draw(c);
+        c.restore();
 
         c.drawBitmap(nick,anchoPantalla/5*1+(jor.getWidth()/4),dy+jor.getHeight()+getPixels(2),null);
 
-        c.save(); // guardamos el lienzo
-        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()/4); // Movemos el lienzo
-        textLayoutNick.draw(c); // Dibujamos el texto
-        c.restore(); // Recuperamos el lienzo a su posición original
+        c.save();
+        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()/4);
+        textLayoutNick.draw(c);
+        c.restore();
 
         c.drawBitmap(pad,anchoPantalla/5*1+(jor.getWidth()/4),dy+jor.getHeight()+nick.getHeight()+getPixels(4),null);
 
-        c.save(); // guardamos el lienzo
-        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()/4); // Movemos el lienzo
-        textLayoutPad.draw(c); // Dibujamos el texto
-        c.restore(); // Recuperamos el lienzo a su posición original
+        c.save();
+        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()/4);
+        textLayoutPad.draw(c);
+        c.restore();
 
         c.drawBitmap(corasao,anchoPantalla/5*1+(jor.getWidth()/4),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+getPixels(10),null);
 
-        c.save(); // guardamos el lienzo
-        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()/4); // Movemos el lienzo
-        textlayoutCorason.draw(c); // Dibujamos el texto
-        c.restore(); // Recuperamos el lienzo a su posición original
+        c.save();
+        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()/4);
+        textlayoutCorason.draw(c);
+        c.restore();
 
         c.drawBitmap(bookIce,anchoPantalla/5*1+(jor.getWidth()/4),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()+getPixels(15),null);
 
-        c.save(); // guardamos el lienzo
-        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()+(bookIce.getHeight()/2)); // Movemos el lienzo
-        textLayoutBook.draw(c); // Dibujamos el texto
-        c.restore(); // Recuperamos el lienzo a su posición original
+        c.save();
+        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()+(bookIce.getHeight()/2));
+        textLayoutBook.draw(c);
+        c.restore();
 
         c.drawBitmap(padAttack,anchoPantalla/5*1+(jor.getWidth()/4),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()+bookIce.getHeight()+getPixels(20),null);
 
-        c.save(); // guardamos el lienzo
-        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()+bookIce.getHeight()+(padAttack.getHeight()/2)+getPixels(5)); // Movemos el lienzo
-        textLayoutPadAttack.draw(c); // Dibujamos el texto
-        c.restore(); // Recuperamos el lienzo a su posición original
+        c.save();
+        c.translate(anchoPantalla/5*2+getPixels(5),dy+jor.getHeight()+nick.getHeight()+pad.getHeight()+corasao.getHeight()+bookIce.getHeight()+(padAttack.getHeight()/2)+getPixels(5));
+        textLayoutPadAttack.draw(c);
+        c.restore();
 
     }
 
@@ -94,6 +114,11 @@ public class Tutorial extends Escena {
         super.actualizarFisica();
     }
 
+    /**
+     * Evento de pulsacion para realizar scroll en el tutorial.
+     * @param event
+     * @return
+     */
     @Override
     public int onTouchEvent(MotionEvent event) {
         float positionYOld=positionY;
@@ -101,7 +126,6 @@ public class Tutorial extends Escena {
         switch (event.getAction()){
             case MotionEvent.ACTION_UP:
                 if(atras.contains((int) event.getX(),(int) event.getY())){
-                    //DEBERIA GUARDAR LAS BOOLEANAS DE VOLUMEN Y VIBRACION AQUI;
                     return 1;
                 }
                 break;

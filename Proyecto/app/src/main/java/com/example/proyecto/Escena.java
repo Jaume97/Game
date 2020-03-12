@@ -21,15 +21,25 @@ import java.io.InputStream;
 import java.util.Locale;
 
 public class Escena {
+    //El numero de escena.
     int numeroEscena;
+    //el contexto de la actividad.
     Context context;
+    //los altos y anchos de pantalla(Ahora inicializados a su valor real)
     int altoPantalla,anchoPantalla;
+    //el fondo del menu principal y la imagen de "back".
     Bitmap fondo,home;
+    //la clase que inicia las funciones de vibracion
     Vibrator vibrator;
+    //clase que almacena la fuente de letra
     Typeface faw;
+    //Pincel para pintar y lapiz para escribir.
     Paint lapiz,paint;
+    //Boton de atras que retorna la escena Menu
     Rect atras;
+    //El fichero de preferencias
     SharedPreferences preferences;
+    //El editor del fichero de preferencias.
     SharedPreferences.Editor editor;
 
     /**
@@ -159,21 +169,42 @@ public class Escena {
         }
     }
 
+    /**
+     * Metodo que devuelve el numero de escena.
+     * @return
+     */
     public int getNumeroEscena() {
         return numeroEscena;
     }
+
+    /**
+     * Evento que se genera cada cierto tiempo y que sirve para actualizar el comportamiento de la app(En este caso no hace nada).
+     */
     public void actualizarFisica(){
 
     }
+
+    /**
+     * Metodo donde inicia la reproduccion de la musica.
+     * @param mediaPlayer
+     */
     public void startMusic(MediaPlayer mediaPlayer){
         mediaPlayer.start();
     }
+
+    /**
+     * Metodo donde detiene la reproducion de la musica.
+     * @param mediaPlayer
+     */
     public void endMusic(MediaPlayer mediaPlayer){
         mediaPlayer.stop();
     }
-    public void pauseMusic(MediaPlayer mediaPlayer){
-        mediaPlayer.pause();
-    }
+
+    /**
+     * Metodo que devuelve el tamaño de pixeles del numero pasado por el parametro.
+     * @param dp
+     * @return
+     */
     int getPixels(float dp) {
         DisplayMetrics metrics = new DisplayMetrics();
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay(). getMetrics(metrics);

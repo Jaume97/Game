@@ -10,38 +10,46 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 
-
+/**
+ * Clase donde se ubica el juego de la aplicacion.
+ */
 public class Juego extends Escena {
     Jormunand jormunand;
     LibroIce libroIce;
     Nick nick;
     Esqueleto esqueleto;
-    MediaPlayer mediaPlayer;
+    //Clase que gestiona el volumen de los efectos sonoros y sus perifereicos.
     AudioManager audioManager;
+    //Coleccion de efectos.
     SoundPool efectos;
+    //indices de los sonidos de fuego y hielo respectivamente.
     int sonidoFire,sonidoIce;
+    //cantidad de sonidos simultaneos.
     final int maxSonidos=10;
+    //el volumen de los efectos.
     int v;
-
+    //Array de las imagenes del hechizo de fuego.
     Bitmap[] fire={escalaAltura(getBitmapFromAssets("flame_0_fixed.png"),altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_1_fixed.png"),
             altoPantalla/8),escalaAltura(getBitmapFromAssets("flame_2_fixed.png"),altoPantalla/8)};
-
+    //Array de las imagenes del hechizo de hielo.
     Bitmap[] frost={escalaAltura(getBitmapFromAssets("frost_0.png"),altoPantalla/14),escalaAnchura(getBitmapFromAssets("frost_1.png"),
             anchoPantalla/25)};
-
+    //Array de las imagenes de la nube de daño por fuego.
     Bitmap[] cloudFire={escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/5),
             escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_fire_3.png"),anchoPantalla/5),
             escalaAnchura(getBitmapFromAssets("cloud_fire_2.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_fire_1.png"),anchoPantalla/5),
             escalaAnchura(getBitmapFromAssets("cloud_fire_0.png"),anchoPantalla/5)};
 
+    //Array de las imagenes de la nube de daño por hielo.
     Bitmap[] cloudIce={escalaAnchura(getBitmapFromAssets("cloud_cold_0.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_cold_1.png"),anchoPantalla/5),
             escalaAnchura(getBitmapFromAssets("cloud_cold_2.png"),anchoPantalla/5),escalaAnchura(getBitmapFromAssets("cloud_cold_1.png"),anchoPantalla/5),
             escalaAnchura(getBitmapFromAssets("cloud_cold_0.png"),anchoPantalla/5)};
+
     Bitmap imagenes_Jormunand,imagenes_Nick,imgCruceta,imgAttack,mapa,heartFull,heartEmpty,bookFrozen,imagenes_attack,imagen_zombieAndEsqueleto;
+
     Rect izquierda,derecha,arriba,abajo,ataque,juegoFinal;
+
     int tick=200,distanciaPaso;
     long tiempo=0;
     int frame=0;
@@ -58,6 +66,15 @@ public class Juego extends Escena {
     int ttotal=500;
 
     Spell spell;
+
+    /**
+     * Inicializa loas propiedades a los parametros.
+     * @param numeroEscena
+     * @param fondo
+     * @param context
+     * @param anchoPantalla
+     * @param altoPantalla
+     */
     public Juego(int numeroEscena, Bitmap fondo, Context context, int anchoPantalla, int altoPantalla) {
         super(numeroEscena, fondo, context, anchoPantalla, altoPantalla);
 
@@ -103,8 +120,9 @@ public class Juego extends Escena {
         imgCruceta=getBitmapFromAssets("dpad.png");
         imgCruceta=escalaAltura(imgCruceta,altoPantalla/4);
         imgCruceta=escalaAnchura(imgCruceta,anchoPantalla/4);
-
+        //porcentaje del tamaño de los lados izquierdo y derecho del pad de movimiento.
         float porSize1=(2000f/72f)/100f;
+        //porcentaje del tamaño de los lados arriba y abajo del pad de movimiento.
         float porSize2=(3200f/72f)/100f;
 
 
@@ -142,6 +160,10 @@ public class Juego extends Escena {
         Log.i("tamaño","PosXMapa:"+x+"");
     }
 
+    /**
+     * Dibuja los elementos del propio juego(Nick,Esqueleto,Libro ...).
+     * @param c
+     */
     @Override
     public void dibujar(Canvas c) {
         super.dibujar(c);
@@ -208,6 +230,10 @@ public class Juego extends Escena {
 
     }
 
+    /**
+     * Modifica la fisica de los elementos del juego y la deteccion de colisiones de los enemigos con los hechixos de nick y los golpes que
+     * Nick recibe de los enemigos.
+     */
     @Override
     public void actualizarFisica() {
         super.actualizarFisica();
@@ -325,6 +351,11 @@ public class Juego extends Escena {
         }
 
     }
+
+    /**
+     * Mueve todos los elementos del juego salvo Nick, segun el parametro usado en el metodo.
+     * @param flag
+     */
     public void movimientoPersonajes(String flag){
 
             switch (flag){
@@ -344,6 +375,9 @@ public class Juego extends Escena {
 
     }
 
+    /**
+     * Detiene el movimiento de Nick
+     */
     public void paro(){
         der=false;
         izz=false;
@@ -351,7 +385,11 @@ public class Juego extends Escena {
         arr=false;
     }
 
-
+    /**
+     * Evento de pulsacion para el movimiento de Nick y el propio ataque del mismo.
+     * @param event
+     * @return numeroEscena
+     */
     @Override
     public int onTouchEvent(MotionEvent event) {
 

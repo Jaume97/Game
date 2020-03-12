@@ -2,40 +2,18 @@ package com.example.proyecto;
 
 import android.graphics.Bitmap;
 
+/**
+ * Clase donde se almacenan las imagenes de cualquier personaje del juego,tiene 4 arrays(uno por cada sentido de orientacion).
+ */
 public class Frames {
+    //Arrays de imagenes del movimiento a la izquierda,derecha,arriba y abajo respectivamente.
     Bitmap[] iz,de,ar,ab;
 
-
-
-    public Bitmap[] getIz() {
-        return iz;
-    }
-
+    /**
+     * Devuelve el valor de de[].
+     * @return
+     */
     public Bitmap[] getDe() {
         return de;
-    }
-
-    public Bitmap[] getAr() {
-        return ar;
-    }
-
-    public Bitmap[] getAb() {
-        return ab;
-    }
-
-    public void setIz(Bitmap[] iz) {
-        this.iz = iz;
-    }
-
-    public void setDe(Bitmap[] de) {
-        this.de = de;
-    }
-
-    public void setAr(Bitmap[] ar) {
-        this.ar = ar;
-    }
-
-    public void setAb(Bitmap[] ab) {
-        this.ab = ab;
     }
 }
