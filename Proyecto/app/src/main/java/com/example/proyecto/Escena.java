@@ -42,6 +42,7 @@ public class Escena {
     //El editor del fichero de preferencias.
     SharedPreferences.Editor editor;
 
+
     /**
      * Contructor que inicializa las propiedades a parametros,ademas crea dos paints(un lapiz y una brocha),
      * el archivo de preferencias, el vibrador y los botones de la camara y home.

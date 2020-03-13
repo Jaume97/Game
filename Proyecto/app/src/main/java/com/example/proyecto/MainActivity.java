@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             if (pathActualFotos!=null) {
                 Log.i("TAG", "onActivityResult: no es nulo");
                 foto = BitmapFactory.decodeFile(pathActualFotos);
+                foto=Bitmap.createScaledBitmap(foto,1920,1080,false);
                 pantalla.setFondo(foto);
             } else Log.e("Error", "No hay ruta a la imagen");
         }

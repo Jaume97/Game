@@ -66,6 +66,7 @@ public class Juego extends Escena {
     int ttotal=500;
 
     Spell spell;
+    String nombreUsuario;
 
     /**
      * Inicializa loas propiedades a los parametros.
@@ -81,6 +82,7 @@ public class Juego extends Escena {
         gameEnd=false;
         uDie=false;
 
+        nombreUsuario=preferences.getString("posibleRecord","");
         //Sprite Jormunand
         imagenes_Jormunand=getBitmapFromAssets("flying_dragon-red.png");
         //Sprite Nick
@@ -222,6 +224,7 @@ public class Juego extends Escena {
                 c.drawText(context.getResources().getString(R.string.Muerte),anchoPantalla/2,altoPantalla/2,lapiz);
             }else{
                 c.drawText(context.getResources().getString(R.string.Win),anchoPantalla/2,altoPantalla/2,lapiz);
+
 
             }
             c.drawRect(juegoFinal,paint);
@@ -444,6 +447,11 @@ public class Juego extends Escena {
                     paro();
                     Log.i("fin",""+gameEnd+":"+uDie);
                     if(juegoFinal.contains((int) event.getX(),(int) event.getY()) && gameEnd){
+                        if(!uDie){
+                            editor.putString("record",preferences.getString("record","")+"\n"+nombreUsuario);
+                            editor.remove("posibleRecord");
+                            editor.commit();
+                        }
                         return 1;
                     }
                     break;

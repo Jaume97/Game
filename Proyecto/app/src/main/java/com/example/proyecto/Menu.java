@@ -5,7 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.util.Log;
 import android.view.MotionEvent;
 
 
@@ -19,8 +23,18 @@ public class Menu extends Escena {
     Bitmap teclado;
     //Booleana que indica si se va a escribir el nombre para el hall-of-fame.
     boolean isWritten=false;
-    //
-    Rect[] keyboardAbajo= new Rect[7];
+
+    String[][] letras={
+            {"q","w","e","r","t","y","u","i","o","p","<"},
+            {"a","s","d","f","g","h","j","k","l","ñ","ok"},
+            {"z","x","c","v","b","n","m",",",".","-","_"},
+    };
+
+    Rect[][] teclas;
+    Paint lapizTeclado;
+
+    Tecla[][] arr;
+    String nombreUsuario="";
 
     /**
      * Inicializa las propiedades a parametros tanto de la clase heredada como la propia clase.
@@ -41,21 +55,45 @@ public class Menu extends Escena {
         salon= new Rect(juego.left,opciones.bottom+getPixels(10),juego.right,altoPantalla/6*3+getPixels(20));
         creditos= new Rect(juego.left,salon.bottom+getPixels(10),juego.right,altoPantalla/6*4+getPixels(20));
         tutorial= new Rect(juego.left,creditos.bottom+getPixels(10),juego.right,altoPantalla/6*5+getPixels(20));
-        generarTecladoAbajo();
 
-    }
+        lapizTeclado= new Paint();
+        lapizTeclado.setTextSize(70);
+        lapizTeclado.setColor(Color.BLACK);
+        lapizTeclado.setTypeface(faw);
+        lapizTeclado.setTextAlign(Paint.Align.CENTER);
 
-    /**
-     * Rellena un array de Rect[] de tamaño 7.
-     */
-    public void generarTecladoAbajo(){
-        Rect rect=new Rect(0,altoPantalla/7*6,anchoPantalla/7*1,altoPantalla);
-        keyboardAbajo[0]=rect;
-        for (int i=1;i>7;i++){
-             rect= new Rect(rect.right,rect.top,rect.right+anchoPantalla/7*1,altoPantalla);
-             keyboardAbajo[i]=rect;
+        teclas=new Rect[letras.length][];
+        arr=new Tecla[letras.length][];
+        for (int i = 0; i <letras.length ; i++) {
+            teclas[i]=new Rect[letras[i].length];
+            arr[i]=new Tecla[letras[i].length];
         }
+
+        int distanciaX=0;
+        int distanciaY=3;
+        for (int i = 0; i <teclas.length ; i++) {
+            for (int j = 0; j <teclas[i].length ; j++) {
+//                Log.i("sddd", i+" "+j+"  JuegoView: "+letras[i][j]);
+                // aqui creo el objeto tecla: el rect en función del ancho de pantalla y del tamaño de teclas[i].length (nº de teclas por linea)
+                // luego con el mismo bucle en dibujar dibujo el objeto tecla
+                // y en onTouch controlo para cada tecla si es pulsada, y según la tecla que sea hago una cosa y otra
+                Tecla t= new Tecla();
+                t.tecla=new Rect(anchoPantalla/letras[i].length*distanciaX,altoPantalla/letras[i].length*(letras[i].length-distanciaY),anchoPantalla/letras[i].length*(distanciaX+1),altoPantalla/letras[i].length*((letras[i].length-distanciaY)+1));
+//                t.texto=letras[i][j];
+
+                Log.i("cor", "left: "+t.tecla.left+" rigth : "+t.tecla.right+" anchopantalla: "+anchoPantalla);
+                teclas[i][j]=t.tecla;
+                t.texto=letras[i][j];
+                arr[i][j]=t;
+                //const
+                distanciaX++;
+            }
+            distanciaX=0;
+            distanciaY--;
+        }
+
     }
+
 
     /**
      * Cambia de escena segun la opcion seleccionada.
@@ -82,7 +120,45 @@ public class Menu extends Escena {
                 }else{
                     if(rectTeclado.contains((int) event.getX(),(int) event.getY())){
                         isWritten=false;
+                        nombreUsuario="";
                     }
+                    //evento de pulsacion de teclado.
+                    for (int i = 0; i <teclas.length ; i++) {
+                        for (int j = 0; j <teclas[i].length ; j++) {
+                            if(arr[i][j].tecla.contains((int) event.getX(),(int) event.getY())){
+//                                Log.i("pulsa", "onTouchEvent: "+arr[i][j].texto);
+                                if(!arr[i][j].texto.equals("<") && !arr[i][j].texto.equals("ok")){
+                                    nombreUsuario+=arr[i][j].texto;
+                                }else{
+                                    Log.i("paso", "onTouchEvent: ");
+                                    if(arr[i][j].texto.equals("<")){
+
+                                        char[] nuevoUsu=new char[nombreUsuario.length()];
+
+                                        for (int k = 0; k < nombreUsuario.length(); k++) {
+                                            nuevoUsu[k]=nombreUsuario.charAt(k);
+                                        }
+
+                                        nombreUsuario="";
+
+                                        for (int x = 0; x < nuevoUsu.length-1; x++) {
+                                            nombreUsuario+=nuevoUsu[x];
+                                        }
+
+                                    }else{
+                                        isWritten=false;
+                                        Log.i("nombreUsu", ""+nombreUsuario);
+                                        editor.putString("posibleRecord",nombreUsuario);
+                                        editor.commit();
+                                    }
+                                }
+
+
+                            }
+                        }
+                    }
+
+
                 }
         }
         return numeroEscena;
@@ -109,7 +185,16 @@ public class Menu extends Escena {
             c.drawText(context.getResources().getString(R.string.CREDITOS),anchoPantalla/2,altoPantalla/6*4,lapiz);
             c.drawText(context.getResources().getString(R.string.TUTORIAL),anchoPantalla/2,altoPantalla/6*5,lapiz);
         }else{
+            for (int i = 0; i <teclas.length ; i++) {
+                for (int j = 0; j <teclas[i].length ; j++) {
+                    Log.i("sddd", i+" "+j+"  JuegoView: "+letras[i][j]);
+                    c.drawRect(teclas[i][j],paint);
+                    c.drawText(letras[i][j],teclas[i][j].left+getPixels(20),teclas[i][j].bottom-getPixels(5),lapizTeclado);
 
+                }
+            }
+
+            c.drawText(nombreUsuario,anchoPantalla/2,altoPantalla/2,lapiz);
 
         }
 
