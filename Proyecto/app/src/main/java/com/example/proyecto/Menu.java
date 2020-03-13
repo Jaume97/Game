@@ -18,7 +18,7 @@ import android.view.MotionEvent;
  */
 public class Menu extends Escena {
     //los botones de juego,opciones,HallofFame,creditos,tutorial y teclado. respectivamente.
-    Rect juego,opciones,salon,creditos,tutorial,rectTeclado;
+    Rect juego,opciones,salon,creditos,tutorial,rectTeclado,rectRelleno;
     //Imagen del teclado.
     Bitmap teclado;
     //Booleana que indica si se va a escribir el nombre para el hall-of-fame.
@@ -31,10 +31,11 @@ public class Menu extends Escena {
     };
 
     Rect[][] teclas;
-    Paint lapizTeclado;
+    Paint lapizTeclado,pintura;
 
     Tecla[][] arr;
     String nombreUsuario="";
+
 
     /**
      * Inicializa las propiedades a parametros tanto de la clase heredada como la propia clase.
@@ -52,15 +53,21 @@ public class Menu extends Escena {
         juego= new Rect(anchoPantalla/6*2,0,anchoPantalla/6*4,altoPantalla/6*1);
         rectTeclado=new Rect(anchoPantalla-teclado.getWidth(),0,anchoPantalla,teclado.getHeight());
         opciones= new Rect(juego.left,juego.bottom+getPixels(20),juego.right,altoPantalla/6*2+getPixels(20));
-        salon= new Rect(juego.left,opciones.bottom+getPixels(10),juego.right,altoPantalla/6*3+getPixels(20));
+        salon= new Rect(juego.left-getPixels(50),opciones.bottom+getPixels(10),juego.right+getPixels(50),altoPantalla/6*3+getPixels(20));
         creditos= new Rect(juego.left,salon.bottom+getPixels(10),juego.right,altoPantalla/6*4+getPixels(20));
         tutorial= new Rect(juego.left,creditos.bottom+getPixels(10),juego.right,altoPantalla/6*5+getPixels(20));
 
+        rectRelleno=new Rect(0,anchoPantalla/11*8,anchoPantalla,altoPantalla);
+
         lapizTeclado= new Paint();
         lapizTeclado.setTextSize(70);
-        lapizTeclado.setColor(Color.BLACK);
+        lapizTeclado.setColor(Color.WHITE);
         lapizTeclado.setTypeface(faw);
         lapizTeclado.setTextAlign(Paint.Align.CENTER);
+
+        pintura=new Paint();
+        pintura.setAlpha(240);
+        pintura.setColor(Color.BLACK);
 
         teclas=new Rect[letras.length][];
         arr=new Tecla[letras.length][];
@@ -173,6 +180,7 @@ public class Menu extends Escena {
     public void dibujar(Canvas c) {
         super.dibujar(c);
         if(!isWritten){
+
             c.drawRect(juego,paint);
             c.drawRect(opciones,paint);
             c.drawRect(salon,paint);
@@ -188,13 +196,14 @@ public class Menu extends Escena {
             for (int i = 0; i <teclas.length ; i++) {
                 for (int j = 0; j <teclas[i].length ; j++) {
                     Log.i("sddd", i+" "+j+"  JuegoView: "+letras[i][j]);
-                    c.drawRect(teclas[i][j],paint);
+                    c.drawRect(teclas[i][j],pintura);
                     c.drawText(letras[i][j],teclas[i][j].left+getPixels(20),teclas[i][j].bottom-getPixels(5),lapizTeclado);
 
                 }
             }
 
             c.drawText(nombreUsuario,anchoPantalla/2,altoPantalla/2,lapiz);
+            c.drawRect(rectRelleno,pintura);
 
         }
 

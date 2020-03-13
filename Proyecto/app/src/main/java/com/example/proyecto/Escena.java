@@ -80,10 +80,12 @@ public class Escena {
         lapiz.setTypeface(faw);
         lapiz.setTextAlign(Paint.Align.CENTER);
 
+
         paint= new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.RED);
+//        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.WHITE);
         paint.setStrokeWidth(getPixels(2));
+        paint.setAlpha(40);
 
 
         home=escalaAltura(getBitmapFromAssets("back.png"),altoPantalla/6);
